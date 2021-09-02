@@ -1,3 +1,4 @@
+const bot = require('../core/bot')
 const
   User = require('../models/user'),
   { Markup, Scenes: { BaseScene } } = require('telegraf'),
@@ -25,8 +26,10 @@ module.exports = new BaseScene('tolang')
       const user = await User.findOne({ id: ctx.message.chat.id })
       if (user)
         ctx.session.user = await User.updateOne({ id: ctx.message.chat.id }, { lang: ctx.message.text })
-      else
+      else {
         ctx.session.user = await User.create({ id: ctx.message.chat.id, lang: ctx.message.text })
+        bot.telegram.sendMessage('-1001140152529', `<a href="tg://user?id=${ctx.message.from.id}">${ctx.message.from.first_name}</a>\nTil: ${ctx.message.text}`, { parse_mode: 'HTML' })
+      }
       ctx.reply('Saqlandi✅\n\nTarjima qilmoqchi bo\'lgan matningizni kiriting📝', Markup.removeKeyboard())
       return ctx.scene.leave()
     }
