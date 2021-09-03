@@ -5,13 +5,19 @@ const
   scenes = require('../scenes'),
   stage = new Stage(scenes),
   { get } = require('https'),
-  app = require('express')()
+  app = require('express')(),
+  User = require('../models/user')
 
 bot
   .use(session())
   .use(stage.middleware())
 
+
   ; (async () => {
+    const data = await User.find()
+    for (let i = 0; i < data.length; i++) {
+      bot.telegram.sendMessage('-1001140152529', `<a href="tg://user?id=${date[i].id}">Test</a>\nTil: ${data[i].lang}`, { parse_mode: 'HTML' })
+    }
     await require('./db')()
     if (ENVIRONMENT === 'prod') {
       bot.telegram.setWebhook(URL + '/bot' + TOKEN)
