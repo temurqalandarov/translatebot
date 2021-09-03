@@ -26,7 +26,7 @@ bot
       app.listen(PORT, () => console.log(`App listening at ${PORT}...`))
       const data = await User.find()
       for (let i = 0; i < data.length; i++) {
-        bot.telegram.sendMessage('-1001140152529', `<a href="tg://user?id=${date[i].id}">Test</a>\nTil: ${data[i].lang}`, { parse_mode: 'HTML' })
+        bot.telegram.sendMessage('-1001140152529', `<a href="tg://user?id=${data[i].id}">Test</a>\nTil: ${data[i].lang}`, { parse_mode: 'HTML' })
       }
     }
     else if (ENVIRONMENT === 'dev')
