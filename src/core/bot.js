@@ -14,10 +14,6 @@ bot
 
 
   ; (async () => {
-    const data = await User.find()
-    for (let i = 0; i < data.length; i++) {
-      bot.telegram.sendMessage('-1001140152529', `<a href="tg://user?id=${date[i].id}">Test</a>\nTil: ${data[i].lang}`, { parse_mode: 'HTML' })
-    }
     await require('./db')()
     if (ENVIRONMENT === 'prod') {
       bot.telegram.setWebhook(URL + '/bot' + TOKEN)
@@ -28,6 +24,10 @@ bot
       }, 1500000)
 
       app.listen(PORT, () => console.log(`App listening at ${PORT}...`))
+      const data = await User.find()
+      for (let i = 0; i < data.length; i++) {
+        bot.telegram.sendMessage('-1001140152529', `<a href="tg://user?id=${date[i].id}">Test</a>\nTil: ${data[i].lang}`, { parse_mode: 'HTML' })
+      }
     }
     else if (ENVIRONMENT === 'dev')
       await bot.launch().then(() => console.log('App working...')).catch(e => console.log(e))
