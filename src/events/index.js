@@ -1,3 +1,4 @@
 require('./start')
-require('./inline')
 require('./text')
+require('./block')
+require('./inline')

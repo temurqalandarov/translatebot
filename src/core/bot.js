@@ -1,17 +1,21 @@
 const
   { Telegraf, Scenes: { Stage }, session } = require('telegraf'),
-  { TOKEN, ENVIRONMENT, URL, PORT } = require('./config'),
+  { TOKEN, ENVIRONMENT, URL, PORT, CHANNEL_ID } = require('./config'),
   bot = new Telegraf(TOKEN),
   scenes = require('../scenes'),
   stage = new Stage(scenes),
   { get } = require('https'),
-  app = require('express')(),
-  User = require('../models/user')
+  app = require('express')()
 
 bot
   .use(session())
   .use(stage.middleware())
 
+bot.catch((err) => {
+  const message = err.stack || err
+  console.log(message, err)
+  bot.telegram.sendMessage(CHANNEL_ID, message)
+})
 
   ; (async () => {
     await require('./db')()
@@ -24,10 +28,6 @@ bot
       }, 1500000)
 
       app.listen(PORT, () => console.log(`App listening at ${PORT}...`))
-      const data = await User.find()
-      for (let i = 0; i < data.length; i++) {
-        bot.telegram.sendMessage('-1001140152529', `<a href="tg://user?id=${data[i].id}">Test</a>\nTil: ${data[i].lang}`, { parse_mode: 'HTML' })
-      }
     }
     else if (ENVIRONMENT === 'dev')
       await bot.launch().then(() => console.log('App working...')).catch(e => console.log(e))

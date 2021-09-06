@@ -1,5 +1,7 @@
-module.exports = (object) => {
-  const vals = Object.values(object)
+const translate = require('@vitalets/google-translate-api')
+
+module.exports = () => {
+  const vals = Object.values(translate.languages)
   vals.shift()
   let arr = []
   for (let i = 0; i < vals.length - 2; i++) {
@@ -7,7 +9,7 @@ module.exports = (object) => {
       arr.push([])
     arr[parseInt(i / 3)].push(vals[i])
   }
-  arr.push(['Orqaga⬅️'])
+  arr.push(['Back⬅️'])
   return arr
 }
 

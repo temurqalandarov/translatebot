@@ -5,11 +5,14 @@ module.exports = model('user', new Schema({
     type: Number,
     required: true
   },
-  lang: {
+  lang: String,
+  status: {
     type: String,
-    required: true
-  }
+    required: true,
+    enum: ['member', 'kicked']
+  },
 },
   {
-    versionKey: false
+    versionKey: false,
+    timestamps: true
   }))

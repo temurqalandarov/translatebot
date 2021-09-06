@@ -1,4 +1,3 @@
-const bot = require('../core/bot')
 const
   User = require('../models/user'),
   { Markup, Scenes: { BaseScene } } = require('telegraf'),
@@ -7,33 +6,35 @@ const
   langs = require('../lib/langs')
 
 module.exports = new BaseScene('tolang')
-  .hears('Barcha tillar🌍', ctx => {
-    ctx.reply('Qaysi tilga tarjima qilamiz❓', Markup.keyboard(langs(translate.languages)))
+  .hears('All languages🌍', ctx => {
+    ctx.reply('Choose translation language👇', Markup.keyboard(langs()))
   })
-  .hears('Orqaga⬅️', ctx => {
-    ctx.reply('Qaysi tilga tarjima qilamiz❓', keyboard)
-  })
-  .hears('Chiqish↩️', async ctx => {
+  .hears('Close menu✖️', async ctx => {
     const user = await User.findOne({ id: ctx.message.chat.id })
-    if (user) {
-      ctx.reply('Tarjima qilmoqchi bo\'lgan matningizni kiriting📝', Markup.removeKeyboard())
+    if (user?.lang) {
+      ctx.reply('Enter the text to be translated📝', Markup.removeKeyboard())
       return ctx.scene.leave()
     }
-    ctx.reply('Qaysi tilga tarjima qilamiz❓', keyboard)
+    ctx.reply('Please choose translation language👇', keyboard)
+  })
+  .hears('Back⬅️', ctx => {
+    ctx.reply('Choose translation language👇', keyboard)
+  })
+  .start(ctx => {
+    ctx.reply('Choose translation language👇', keyboard)
+    return ctx.scene.reenter()
   })
   .on('text', async ctx => {
     if (translate.languages.isSupported(ctx.message.text)) {
       const user = await User.findOne({ id: ctx.message.chat.id })
-      if (user)
-        ctx.session.user = await User.updateOne({ id: ctx.message.chat.id }, { lang: ctx.message.text })
-      else {
-        ctx.session.user = await User.create({ id: ctx.message.chat.id, lang: ctx.message.text })
-        ctx.telegram.sendMessage('-1001140152529', `<a href="tg://user?id=${ctx.message.from.id}">${ctx.message.from.first_name}</a>\nTil: ${ctx.message.text}`, { parse_mode: 'HTML' })
-      }
-      ctx.reply('Saqlandi✅\n\nTarjima qilmoqchi bo\'lgan matningizni kiriting📝', Markup.removeKeyboard())
+      if (user?.lang)
+        await User.updateOne({ id: ctx.message.chat.id }, { lang: ctx.message.text })
+      else
+        await User.updateOne({ id: ctx.message.chat.id }, { $set: { lang: ctx.message.text } })
+      ctx.reply('Saved✅\n\nEnter the text to be translated📝', Markup.removeKeyboard())
       return ctx.scene.leave()
     }
-    ctx.reply('Bunday til topilmadi❌\n\nTilni to\'g\'riligini tekshiring yoki tugmalardan foydalaning👇', keyboard)
-    return ctx.scene.enter('tolang')
+    ctx.reply('Not found❌\n\nUse the buttons to choose translation language👇', keyboard)
+    return ctx.scene.reenter()
   })
 

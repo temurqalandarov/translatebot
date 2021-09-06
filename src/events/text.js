@@ -5,15 +5,13 @@ const
   keyboard = require('../lib/keyboard')
 
 bot.on('text', async ctx => {
-  if (!ctx.session.user) {
+  if (!ctx.session.lang) {
     const user = await User.findOne({ id: ctx.message.chat.id })
-    if (!user) {
-      ctx.replyWithHTML(`Salom👋 <a href="tg://user?id=${ctx.message.from.id}">${ctx.message.from.first_name}</a>\n\nQaysi tilga tarjima qilamiz❓`, keyboard)
-      return ctx.scene.enter('tolang')
+    if (!user || !user?.lang) {
+      ctx.reply('Restart the bot👉 /start')
     }
-    ctx.session.user = user
+    ctx.session.lang = user.lang
   }
-  translate(ctx.message.text, { to: translate.languages.getCode(ctx.session.user.lang) })
-    .then(res => { return ctx.reply(res.text) })
-    .catch(err => console.log(err))
+  const result = await translate(ctx.message.text, { to: translate.languages.getCode(ctx.session.lang) })
+  ctx.reply(result.text)
 })

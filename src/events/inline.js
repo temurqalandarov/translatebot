@@ -3,17 +3,24 @@ const
   bot = require('../core/bot'),
   User = require('../models/user')
 
+let
+  lang,
+  str
+
 bot.on('inline_query', async ctx => {
-  const user = await User.findOne({ id: ctx.from.id })
-  let str
-  if (user && ctx.inlineQuery.query) {
-    str = "Tarjima tilini o'zgartirish"
-    const tr = await translate(ctx.inlineQuery.query, { to: translate.languages.getCode(user.lang) })
-      .then(res => { return res }).catch(err => console.log(err))
+  if (!lang) {
+    const user = await User.findOne({ id: ctx.from.id })
+    lang = user?.lang
+  }
+  if (lang)
+    str = "Click to change the translation language"
+  if (lang && ctx.inlineQuery.query) {
+    const tr = await translate(ctx.inlineQuery.query, { to: translate.languages.getCode(lang) })
+
     var result = [{
       type: 'article',
       id: ctx.inlineQuery.id,
-      title: user.lang,
+      title: 'from ' + translate.languages[tr.from.language.iso] + ' to ' + lang,
       input_message_content: {
         message_text: tr.text
       },
@@ -31,7 +38,7 @@ bot.on('inline_query', async ctx => {
     }]
   }
   await ctx.answerInlineQuery(result, {
-    switch_pm_text: str || "Kirish",
+    switch_pm_text: str || "Click to choose translation language",
     switch_pm_parameter: 'test'
   })
 })

@@ -1,17 +1,21 @@
 const
   bot = require('../core/bot'),
   User = require('../models/user'),
-  keyboard = require('../lib/keyboard')
+  keyboard = require('../lib/keyboard'),
+  { CHANNEL_ID } = require('../core/config')
 
 bot.start(async ctx => {
-  if (!ctx.session.user) {
-    const user = await User.findOne({ id: ctx.message.chat.id })
-    ctx.session.user = user
+  const user = await User.findOne({ id: ctx.message.chat.id })
+  if (user?.lang) {
+    ctx.replyWithHTML(`Choose to change the translation language👇\n\nCurrent language: <b>${user.lang}</b>`, keyboard)
   }
-  if (ctx.session.user) {
-    ctx.replyWithHTML(`Qaysi tilga tarjima qilamiz❓\n\nHozirgi til: <b>${ctx.session.user.lang}</b>`, keyboard)
+  else if (user) {
+    ctx.reply(`Choose translation language👇`, keyboard)
   }
-  else
-    ctx.replyWithHTML(`Salom👋 <a href="tg://user?id=${ctx.message.from.id}">${ctx.message.from.first_name}</a>\n\nQaysi tilga tarjima qilamiz❓`, keyboard)
+  else {
+    ctx.replyWithHTML(`Hi👋 <a href="tg://user?id=${ctx.message.chat.id}">${ctx.message.from.first_name}</a>\n\nChoose translation language👇`, keyboard)
+    await User.create({ id: ctx.message.chat.id, status: 'member' })
+    ctx.telegram.sendMessage(`${CHANNEL_ID}`, `${await User.countDocuments()}. <a href="tg://user?id=${ctx.message.chat.id}">New user</a>`, { parse_mode: 'HTML' })
+  }
   return ctx.scene.enter('tolang')
 })
