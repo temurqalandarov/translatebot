@@ -10,7 +10,7 @@ bot.on('text', async ctx => {
     if (!user || !user?.lang) {
       return ctx.reply('Restart the bot👉 /start')
     }
-    ctx.session?.lang = user?.lang
+    ctx.session.lang = user?.lang
   }
   const result = await translate(ctx.message.text, { to: translate.languages.getCode(ctx.session?.lang) })
   ctx.reply(result.text)
