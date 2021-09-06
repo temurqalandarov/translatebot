@@ -17,5 +17,7 @@ bot.start(async ctx => {
     await User.create({ id: ctx.message.chat.id, status: 'member' })
     ctx.telegram.sendMessage(`${CHANNEL_ID}`, `${await User.countDocuments()}. <a href="tg://user?id=${ctx.message.chat.id}">New user</a>`, { parse_mode: 'HTML' })
   }
+  if (user?.status === "kicked")
+    await User.updateOne({ id: ctx.message.chat.id }, { status: 'member' })
   return ctx.scene.enter('tolang')
 })
