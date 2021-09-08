@@ -31,6 +31,7 @@ module.exports = new BaseScene('tolang')
         await User.updateOne({ id: ctx.message.chat.id }, { lang: ctx.message.text })
       else
         await User.updateOne({ id: ctx.message.chat.id }, { $set: { lang: ctx.message.text } })
+      ctx.session.lang = ctx.message.text
       ctx.reply('Saved✅\n\nEnter the text to be translated📝', Markup.removeKeyboard())
       return ctx.scene.leave()
     }
