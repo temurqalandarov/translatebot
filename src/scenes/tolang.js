@@ -7,7 +7,7 @@ const
 
 module.exports = new BaseScene('tolang')
   .hears('All languages🌍', ctx => {
-    ctx.reply('Choose translation language👇', Markup.keyboard(langs()))
+    ctx.reply('Choose translation language👇', Markup.keyboard(langs()).oneTime().resize())
   })
   .hears('Close menu✖️', async ctx => {
     const user = await User.findOne({ id: ctx.message.chat.id })

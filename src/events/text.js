@@ -1,8 +1,7 @@
 const
   translate = require('@vitalets/google-translate-api'),
   bot = require('../core/bot'),
-  User = require('../models/user'),
-  keyboard = require('../lib/keyboard')
+  User = require('../models/user')
 
 bot.on('text', async ctx => {
   if (!ctx.session?.lang) {
@@ -13,5 +12,13 @@ bot.on('text', async ctx => {
     ctx.session.lang = user?.lang
   }
   const result = await translate(ctx.message.text, { to: translate.languages.getCode(ctx.session?.lang) })
-  ctx.reply(result.text)
+  ctx.reply(result.text, {
+    reply_markup: {
+      inline_keyboard: [[{
+        text: 'Share',
+        url: `https://t.me/share/url?url=${ctx.message.text}`
+        // switch_inline_query: ctx.message.text
+      }]]
+    }
+  })
 })

@@ -34,7 +34,10 @@ bot.on('inline_query', async ctx => {
           ]
         ]
       },
-      description: tr.text
+      description: tr.text,
+      thumb_url: "https://i.pinimg.com/originals/15/ef/2f/15ef2f2fa24e59c44cec1204692104fd.jpg",
+      thumb_width: 100,
+      thumb_height: 100
     }]
   }
   await ctx.answerInlineQuery(result, {

@@ -5,4 +5,4 @@ module.exports = Markup.keyboard([
   ['Hindi', 'Spanish', 'Turkish'],
   ['Portuguese', 'Malay', 'Arabic'],
   ['All languages🌍', 'Close menu✖️']
-])
+]).oneTime().resize()
