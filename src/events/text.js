@@ -16,7 +16,7 @@ bot.on('text', async ctx => {
     reply_markup: {
       inline_keyboard: [[{
         text: 'Share',
-        url: `https://t.me/share/url?url=${ctx.message.text}`
+        url: `https://t.me/share/url?url=${result.text}`
         // switch_inline_query: ctx.message.text
       }]]
     }
